@@ -3,6 +3,7 @@ name = "music-library"
 version = "0.1.0"
 description = "A desktop app for a FLAC music library: the crate app and its backend, libcrate"
 readme = "README.md"
+license = "AGPL-3.0-or-later"
 authors = [
     { name = "Denis Rozimovschii", email = "rozimovschii.denis@gmail.com" }
 ]

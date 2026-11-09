@@ -3,6 +3,7 @@ name = "libcrate"
 version = "0.1.0"
 description = "The backend of crate: a music library's metadata catalog, genres, embeddings and similar tracks"
 readme = "README.md"
+license = "AGPL-3.0-or-later"
 authors = [
     { name = "Denis Rozimovschii", email = "rozimovschii.denis@gmail.com" }
 ]

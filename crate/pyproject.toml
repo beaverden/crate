@@ -3,6 +3,7 @@ name = "crate"
 version = "0.1.0"
 description = "Desktop app for the music library: browse the catalog, scan and enrich it"
 readme = "README.md"
+license = "AGPL-3.0-or-later"
 authors = [
     { name = "Denis Rozimovschii", email = "rozimovschii.denis@gmail.com" }
 ]
