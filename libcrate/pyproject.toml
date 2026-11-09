@@ -1,0 +1,46 @@
+[project]
+name = "libcrate"
+version = "0.1.0"
+description = "The backend of crate: a music library's metadata catalog, genres, embeddings and similar tracks"
+readme = "README.md"
+authors = [
+    { name = "Denis Rozimovschii", email = "rozimovschii.denis@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "curl-cffi==0.16.3",
+    "essentia-tensorflow==2.1b6.dev1389",
+    "huggingface-hub==2.2.0",
+    "langchain==1.4.4",
+    "langchain-anthropic==1.7.5",
+    "mutagen==1.48.1",
+    "numpy==2.5.3",
+    "pyarrow==25.0.1",
+    "pydantic==2.14.0",
+    "pyyaml==6.0.3",
+    "scikit-learn==1.9.1",
+    "scipy==1.18.1",
+    "soundfile==0.14.0",
+    "torch==2.11.0",
+    "transformers==5.19.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.22,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib"]
+markers = [
+    "essentia: runs the real Essentia models (a few seconds; skipped if the model files are missing)",
+    "clap: runs the real CLAP model (seconds; skipped if it isn't downloaded)",
+]

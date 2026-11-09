@@ -1,0 +1,38 @@
+[project]
+name = "crate"
+version = "0.1.0"
+description = "Desktop app for the music library: browse the catalog, scan and enrich it"
+readme = "README.md"
+authors = [
+    { name = "Denis Rozimovschii", email = "rozimovschii.denis@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "libcrate",
+    "mutagen==1.48.1",
+    "PySide6==6.11.2",
+    "pyside6-fluent-widgets==1.11.3",
+    "python-vlc==3.0.21203",
+]
+
+[project.scripts]
+crate = "crate:main"
+
+[tool.uv.sources]
+libcrate = { workspace = true }
+
+[build-system]
+requires = ["uv_build>=0.12.22,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib"]
