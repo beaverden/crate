@@ -139,7 +139,8 @@ def test_api_key_eye_toggles_on_click(page):
 
 # -- what a fetcher says --------------------------------------------------------------
 
-def test_a_fetcher_says_what_it_does_and_why_it_cant_run(page):
+def test_a_fetcher_says_what_it_does_and_why_it_cant_run(page, tmp_path):
+    page.editors[("models", "folder")].set_value(tmp_path / "models")  # nothing downloaded, whatever's on this machine
     llm = page.sections["llm-genres"]
     assert llm.about.text().startswith("The Discogs styles a language model knows")
     assert llm.problems.text() == "Can't run: no API key for anthropic: set keys.anthropic, or ANTHROPIC_API_KEY."

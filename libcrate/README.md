@@ -171,7 +171,7 @@ Similar, Map, Radio and Describe use embeddings, from the fetchers their setting
 
 ## Similar tracks
 
-`libcrate.Similar` lists the tracks that sound most like a chosen one, compared by one embedding fetcher's (the `similar.embeddings` setting): the chosen track first, then up to `similar.count` others, best match first. Similarity is cosine similarity on centred embeddings (the chosen track scores 1). Other versions of a song already listed, near-identical tracks (`similar.duplicate_similarity`) and an artist listed `similar.per_artist` times already (the chosen track counts) are skipped. The list is the same every time. Tracks without an embedding are left out.
+`libcrate.Similar` lists the tracks that sound most like a chosen one, compared by one embedding fetcher's (the `similar.embeddings` setting): the chosen track first, then up to `similar.count` others, best match first. Similarity is cosine similarity on centred embeddings (the chosen track scores 1). Nothing is skipped, other versions of the same song and the same artist's tracks included, so the list is the same every time; leaving those out is Radio's job. Tracks without an embedding are left out.
 
 ```python
 settings = store.settings()

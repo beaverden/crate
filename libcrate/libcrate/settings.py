@@ -267,9 +267,6 @@ class SimilarSettings(_Section):
 
     embeddings: str = Field("discogs-effnet", description="the embeddings to compare tracks by")
     count: int = Field(30, description="how many similar tracks to list")
-    per_artist: int = Field(2, description="at most this many tracks by one artist, the chosen track's included "
-                                           "(0 = no limit)")
-    duplicate_similarity: float = Field(0.97, description="tracks more similar than this count as the same song")
 
     def options(self) -> dict[str, Any]:
         """Keyword arguments for Similar.find: every setting but the embeddings."""

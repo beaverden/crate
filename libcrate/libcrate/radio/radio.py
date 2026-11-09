@@ -21,16 +21,18 @@ track is drawn at random from the `choices` best candidates, so a station from t
 every time.
 
 Never picked: a track already picked, another version of a song already picked (same main artist and
-title, as for similar tracks), a track nearly identical to one picked (duplicate_similarity), or an artist
+title), a track nearly identical to one picked (duplicate_similarity), or an artist
 picked within the last `artist_gap` tracks (unless nothing else is left). Tracks without an embedding
 in the table are left out.
 """
+
+import re
 
 import numpy as np
 
 from libcrate.catalog import Catalog
 from libcrate.embeddings import EmbeddingTable, TrackMatch, similarity_space
-from libcrate.similar import main_artist, song_name
+from libcrate.track import TrackRecord
 
 __all__ = ["Radio"]
 
@@ -38,6 +40,26 @@ __all__ = ["Radio"]
 LISTENED_PULL = 0.25
 # How much a skipped track's similarity counts against the candidates like it.
 SKIP_PENALTY = 0.5
+
+# "(Explicit)", "[Remastered]", "(feat. X)"
+_BRACKETED = re.compile(r"\s*[\[(][^\])]*[\])]")
+# Versions of the same song; remixes count as different songs.
+_VERSION = re.compile(r"\s+-\s+(radio edit|radio mix|original mix|extended mix|extended|edit|"
+                      r"remaster(ed)?.*|\d{4} remaster.*|single version|album version|live.*)$", re.I)
+# "A & B", "A feat. B", "A, B", "A x B" -> "a"
+_MORE_ARTISTS = re.compile(r"\s*(?:,|&| x | feat\.? | ft\.? )\s*")
+
+
+def main_artist(track: TrackRecord) -> str:
+    """The first artist, without the ones featured or credited with it, lowercased."""
+    artist = track.tags.artists[0] if track.tags.artists else ""
+    return _MORE_ARTISTS.split(artist.lower())[0].strip()
+
+
+def song_name(track: TrackRecord) -> str:
+    """The title without versions and bracketed extras, to spot other versions of a song."""
+    title = _BRACKETED.sub("", track.tags.title or track.path).strip()
+    return re.sub(r"\W+", " ", _VERSION.sub("", title).lower()).strip()
 
 
 def _unit(vector: np.ndarray) -> np.ndarray:

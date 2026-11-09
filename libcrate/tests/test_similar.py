@@ -8,7 +8,7 @@ from libcrate.embeddings import Embedding, EmbeddingTable
 from libcrate.similar import Similar
 from libcrate.settings import Settings
 
-OPTIONS = {"count": 10, "per_artist": 0, "duplicate_similarity": 1.1}  # everything, in order
+OPTIONS = {"count": 10}  # everything, in order
 
 
 @pytest.fixture
@@ -51,15 +51,15 @@ def titles(items):
     return [item.track.tags.title for item in items]
 
 
-def test_closest_first_without_other_versions(library):
+def test_closest_first(library):
     catalog, _ = Catalog.scan(library)
     similar = Similar(catalog, table_for(catalog, VECTORS))
     assert len(similar) == 6  # "Seed - Radio Edit" has no embedding
 
     items = similar.find(path_of(catalog, "Seed"), **OPTIONS)
 
-    # "Seed (Remastered)" is the seed's song again, by the same main artist.
-    assert titles(items) == ["Seed", "Same Artist", "Near", "Nearish", "Far"]
+    # Nothing skipped: the seed's other version and its artist's other track are listed too.
+    assert titles(items) == ["Seed", "Seed (Remastered)", "Same Artist", "Near", "Nearish", "Far"]
     assert items[0].similarity == pytest.approx(1.0)
     assert [i.similarity for i in items] == sorted((i.similarity for i in items), reverse=True)
     assert similar.find(path_of(catalog, "Seed"), **OPTIONS) == items  # the same every time
@@ -68,21 +68,7 @@ def test_closest_first_without_other_versions(library):
 def test_count(library):
     catalog, _ = Catalog.scan(library)
     similar = Similar(catalog, table_for(catalog, VECTORS))
-    assert titles(similar.find(path_of(catalog, "Seed"), **{**OPTIONS, "count": 2})) == ["Seed", "Same Artist", "Near"]
-
-
-def test_per_artist_counts_the_seed(library):
-    catalog, _ = Catalog.scan(library)
-    similar = Similar(catalog, table_for(catalog, VECTORS))
-    items = similar.find(path_of(catalog, "Seed"), **{**OPTIONS, "per_artist": 1})
-    assert titles(items) == ["Seed", "Near", "Nearish", "Far"]  # artist A once: the seed
-
-
-def test_near_duplicates_are_skipped(library):
-    catalog, _ = Catalog.scan(library)
-    similar = Similar(catalog, table_for(catalog, {**VECTORS, "Near": [1.0, 0.001, 0.0]}))
-    items = similar.find(path_of(catalog, "Seed"), **{**OPTIONS, "duplicate_similarity": 0.97})
-    assert "Near" not in titles(items)
+    assert titles(similar.find(path_of(catalog, "Seed"), count=2)) == ["Seed", "Seed (Remastered)", "Same Artist"]
 
 
 def test_tracks_without_embedding_or_gone_from_the_catalog(library):
@@ -101,4 +87,4 @@ def test_empty_table(library):
 
 
 def test_settings_options():
-    assert Settings().similar.options() == {"count": 30, "per_artist": 2, "duplicate_similarity": 0.97}
+    assert Settings().similar.options() == {"count": 30}
