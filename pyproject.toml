@@ -1,7 +1,7 @@
 [project]
 name = "music-library"
 version = "0.1.0"
-description = "Add your description here"
+description = "A desktop app for a FLAC music library: the crate app and its backend, libcrate"
 readme = "README.md"
 authors = [
     { name = "Denis Rozimovschii", email = "rozimovschii.denis@gmail.com" }

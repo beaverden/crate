@@ -24,8 +24,8 @@ a schema and a method that calls _ask(). Available today:
   describe  A description of how the track sounds and feels, with search keywords,
             written from facts about it (its tags, genres from other sources, tags
             from an audio analysis) plus what the model knows of the track or its
-            artist, if anything. Every track gets one, known or not; an experiment
-            (TASKS.md) found searching such descriptions beat the knowledge-only ones.
+            artist, if anything. Every track gets one, known or not; in an experiment,
+            searching such descriptions beat searching knowledge-only ones.
 
 """
 

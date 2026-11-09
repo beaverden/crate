@@ -1,6 +1,6 @@
 # crate
 
-The desktop app for the music library, built with PySide6 and [PySide6-Fluent-Widgets](https://qfluentwidgets.com) (Fluent design; GPLv3), on top of [libcrate](../libcrate/README.md). It works on a libcrate output folder, the one holding `catalog.json`.
+The desktop app for the music library, built with PySide6 and [PySide6-Fluent-Widgets](https://qfluentwidgets.com) (Fluent design; GPLv3), on top of [libcrate](../libcrate/README.md). It works on a libcrate catalog folder, the one holding `catalog.json` and `settings.yaml`.
 
 ```sh
 uv run crate      # from the repo root
@@ -11,7 +11,7 @@ uv run crate      # from the repo root
 - **Open** asks for a catalog folder only: the catalog knows its music folder. A folder without a catalog is refused. The catalog opened last is reopened on the next start.
 - **Scan** reads new and changed files of the open catalog's music folder into it (`MetadataStore.scan`).
 - **Enrich** runs the fetchers that are on in Settings › Fetchers (`MetadataStore.run`): first it downloads the models they need, then runs them in the order their inputs need (the genres and muq-mulan before llm-descriptions, which comes before description-bge). A fetcher that can't run (no API key, a fetcher it needs that's off) is left out, and a notification says why. With nothing on, a notification points to Settings; otherwise it takes you to the Jobs page, where it can be stopped. Closing the window stops it too, after the lookups in flight, saving what's done.
-- The table searches artist, title, album and genres, and sorts by any column; each row shows the track's cover with its artists under the title, like Spotify (thumbnails are read from the files in the background, kept in memory and saved as small JPEGs in `thumbnails/` in the output folder, so each cover is decoded only once; thumbnails of changed or removed files are deleted), and the card on the right shows the selected track's cover (read from the file), tags, its description (with the keywords as chips, the lyrics' language, and whether the language model knew the track or described it from the facts), genres per source as chips, and audio.
+- The table searches artist, title, album and genres, and sorts by any column; each row shows the track's cover with its artists under the title, like Spotify (thumbnails are read from the files in the background, kept in memory and saved as small JPEGs in `thumbnails/` in the catalog folder, so each cover is decoded only once; thumbnails of changed or removed files are deleted), and the card on the right shows the selected track's cover (read from the file), tags, its description (with the keywords as chips, the lyrics' language, and whether the language model knew the track or described it from the facts), genres per source as chips, and audio.
 
 - **Similar** (or right-click a track, Similar tracks) lists the tracks that sound most like the selected one (`libcrate.Similar`) on the **Similar** page: best match first, with a **Match** column (how alike each is, 100% for the selected track), and **Play** to play them in that order. It needs the tracks' embeddings, from the fetcher in Settings › Similar (`discogs-effnet` by default; turn it on in Settings › Fetchers, then press Enrich); without them a notification says so. Only embeddings made with the fetcher's current settings are used. Its settings (model, how many tracks, at most how many per artist, ...) are the `similar` section of the settings.
 - **Right-click a track** in the library, or on the Similar, Describe or Radio page, to play it, list similar tracks, **Start radio** from it, or **Show in map**: the Map page opens with the track selected and in view (once the map is made; a notification says so when the track has no embedding for the map's model).
@@ -35,7 +35,7 @@ uv run crate      # from the repo root
 
 Save rewrites the file with its comments (readable only by you, since it can hold API keys), and the next Enrich uses it; comments added to the file by hand aren't kept.
 
-The theme follows the system's light or dark mode until the **Theme** button at the bottom of the navigation bar switches it; that choice is remembered. the accent colour is `THEME_COLOR` in `crate/__init__.py`. Results and errors appear as notifications in the top right corner.
+The theme follows the system's light or dark mode until the **Theme** button at the bottom of the navigation bar switches it; that choice is remembered. The accent colour is `THEME_COLOR` in `crate/__init__.py`. Results and errors appear as notifications in the top right corner.
 
 Scan and Enrich run in a background thread (`crate.tasks`), so the window stays responsive. Enrich works on a copy of the catalog and the table shows the result when it ends; progress is saved to `catalog.json` as it goes. The fetchers' settings (API keys, timeouts, models) come from the catalog's `settings.yaml`.
 
@@ -45,4 +45,4 @@ Scan and Enrich run in a background thread (`crate.tasks`), so the window stays 
 uv run --package crate pytest crate      # from the repo root
 ```
 
-They run Qt offscreen, so no window opens. The player tests play `test_music/` through libvlc with no sound output, and are skipped without VLC. They test the library page on its own: the main window (`MSFluentWindow`) is frameless and drives the native macOS window, which crashes on Qt's offscreen platform.
+They run Qt offscreen, so no window opens. The player tests play the FLACs in `test_music/` at the repo root (not in the repository; see [libcrate's tests](../libcrate/README.md#tests)) through libvlc with no sound output, and are skipped without VLC or that folder. They test the library page on its own: the main window (`MSFluentWindow`) is frameless and drives the native macOS window, which crashes on Qt's offscreen platform.

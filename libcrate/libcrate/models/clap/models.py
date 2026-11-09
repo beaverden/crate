@@ -9,8 +9,8 @@ Available today:
                      it, 512 dimensions: the release's weights as they are (2.65 GB,
                      CC BY-NC 4.0: not for commercial use) and XLM-RoBERTa's tokenizer,
                      run by our own rebuild of the network (muq_mulan.py). It told
-                     genres apart best in a comparison on a 2,000-track library
-                     (TASKS.md), techno from psytrance especially.
+                     genres apart best in a comparison on a 2,000-track library,
+                     techno from psytrance especially.
   laion-clap-music   LAION's CLAP trained on music (music_audioset_epoch_15_esc_90.14),
                      512 dimensions. The copy on Hugging Face (laion/larger_clap_music)
                      isn't this checkpoint and maps every text to nearly the same
